@@ -37,7 +37,7 @@ public class NovaCategoriaView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					handler = new CategoriaHandler();
+					
 					NovaCategoriaView frame = new NovaCategoriaView();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -51,6 +51,9 @@ public class NovaCategoriaView extends JFrame {
 	 * Create the frame.
 	 */
 	public NovaCategoriaView() {
+		handler = new CategoriaHandler();
+		
+		
 		setTitle("Nova categoria");
 		setType(Type.POPUP);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -84,7 +87,7 @@ public class NovaCategoriaView extends JFrame {
 					categorias.add(novo);
 					handler.Create(categorias);
 					
-					
+					dispose();
 					
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block

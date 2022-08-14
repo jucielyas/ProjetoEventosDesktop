@@ -41,7 +41,7 @@ public class NovoUsuarioView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					handler = new UsuarioHandler();
+					
 					NovoUsuarioView frame = new NovoUsuarioView();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -55,6 +55,9 @@ public class NovoUsuarioView extends JFrame {
 	 * Create the frame.
 	 */
 	public NovoUsuarioView() {
+		
+		handler = new UsuarioHandler();
+		
 		setTitle("Cadastro de Usuário");
 		setBounds(100, 100, 311, 272);
 		contentPane = new JPanel();

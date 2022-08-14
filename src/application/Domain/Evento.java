@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Evento  extends Base  {
 	private int idCategoria;
-	private int idEndereco;
+	private String endereco;
 	private String nome;
 	private Date  data;
 	private String descricao;
@@ -14,8 +14,8 @@ public class Evento  extends Base  {
 	    this.idCategoria = idCategoria;
 	  }
 	
-	public void SetIdEndereco(int idEndereco) {
-	    this.idEndereco = idEndereco;	  
+	public void SetEndereco(String endereco) {
+	    this.endereco = endereco;	  
 	  }
 	public void SetNome(String nome) {
 	    this.nome = nome;
@@ -34,8 +34,8 @@ public class Evento  extends Base  {
 	    return this.idCategoria;
 	  }
 	
-	public int GetIdEndereco() {
-	    return this.idEndereco;  
+	public String GetEndereco() {
+	    return this.endereco;  
 	  }
 	public String GetNome() {
 	    return this.nome;

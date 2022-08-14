@@ -18,7 +18,10 @@ import javax.swing.JFormattedTextField;
 
 import com.toedter.calendar.JCalendar;
 
+import application.Global;
+import application.Core.CategoriaHandler;
 import application.Core.EventoHandler;
+import application.Domain.Categoria;
 import application.Domain.Evento;
 
 import javax.swing.JTextPane;
@@ -31,12 +34,14 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowEvent;
 
 public class NovoEventoView extends JFrame {
 
 	private JPanel contentPane;
 	private static EventoHandler eventoHandler;
-	
+	private static CategoriaHandler categoriaHandler;
 	/**
 	 * Launch the application.
 	 */
@@ -44,7 +49,7 @@ public class NovoEventoView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					eventoHandler = new EventoHandler();
+				
 					
 					NovoEventoView frame = new NovoEventoView();
 					frame.setVisible(true);
@@ -60,6 +65,10 @@ public class NovoEventoView extends JFrame {
 	 * @throws ParseException 
 	 */
 	public NovoEventoView() throws ParseException {
+
+		eventoHandler = new EventoHandler();
+		categoriaHandler = new CategoriaHandler();
+		
 		setTitle("Cadastro de Evento");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 540, 319);
@@ -108,25 +117,39 @@ public class NovoEventoView extends JFrame {
 		lblNewLabel_1_1.setBounds(291, 74, 68, 14);
 		contentPane.add(lblNewLabel_1_1);
 		
+		JComboBox cboCategoria = new JComboBox();
+		cboCategoria.setBounds(290, 193, 167, 22);
+		contentPane.add(cboCategoria);
+		
 		JButton btnSalvar = new JButton("Salvar");
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				try {
+					List<Categoria> categorias = categoriaHandler.GetList();
+					
 					List<Evento> eventos = new ArrayList<Evento>();
 					eventos = eventoHandler.GetList();				
 					
 					Evento novo = new Evento();
 					novo.SetNome(txtNome.getText());
 					novo.SetDescricao(txtDescricao.getText());
+					novo.SetEndereco(txtEndereco.getText());
 					
 					Date dataHora = (Date)new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(txtHora.getText());
 					novo.SetData(dataHora);
+					
+					var categoria= categorias.stream().filter(l -> l.GetDescricao().equals(cboCategoria.getSelectedItem())).toList().get(0);
+					novo.SetIdCategoria(categoria.GetId());
+					
 					
 					var novoId = eventoHandler.ObterNovoId();
 					novo.SetId(novoId);
 					eventos.add(novo);
 					eventoHandler.Create(eventos);
+			
+					dispose();
+					
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -141,9 +164,7 @@ public class NovoEventoView extends JFrame {
 		btnSalvar.setBounds(20, 239, 485, 30);
 		contentPane.add(btnSalvar);
 		
-		JComboBox cboCategoria = new JComboBox();
-		cboCategoria.setBounds(290, 193, 167, 22);
-		contentPane.add(cboCategoria);
+		
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("Categoria:");
 		lblNewLabel_1_1_1.setBounds(291, 171, 68, 14);
@@ -157,6 +178,27 @@ public class NovoEventoView extends JFrame {
 		});
 		btnCategoria.setBounds(464, 193, 41, 23);
 		contentPane.add(btnCategoria);
+		
+		
+		addWindowFocusListener(new WindowFocusListener() {
+			public void windowGainedFocus(WindowEvent e) {
+				try {
+					cboCategoria.removeAllItems();
+					List<Categoria> categorias = categoriaHandler.GetList();				
+					categorias.stream().forEach(l -> cboCategoria.addItem(l.GetDescricao()));
+					
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+			}
+			public void windowLostFocus(WindowEvent e) {
+			}
+		});
+		
 		
 	}
 }

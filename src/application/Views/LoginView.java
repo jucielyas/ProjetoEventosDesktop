@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import application.Global;
 import application.Core.UsuarioHandler;
 import application.Domain.Usuario;
 
@@ -16,10 +17,16 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 
 public class LoginView extends JFrame {
 
@@ -35,9 +42,10 @@ public class LoginView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					handler = new UsuarioHandler();
+					
 					LoginView frame = new LoginView();
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -49,7 +57,11 @@ public class LoginView extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginView() {
+
+		handler = new UsuarioHandler();
+		
 		setType(Type.POPUP);
+		setTitle("Login");
 		setBounds(100, 100, 231, 330);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -68,21 +80,38 @@ public class LoginView extends JFrame {
 		lblSenha.setBounds(33, 109, 46, 14);
 		contentPane.add(lblSenha);
 		
+		JLabel lblInfo = new JLabel("");
+		lblInfo.setForeground(new Color(205, 92, 92));
+		lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInfo.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblInfo.setBounds(10, 190, 195, 36);
+		contentPane.add(lblInfo);
+		
 		JButton btnEntrar = new JButton("Entrar");
 		btnEntrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				List<Usuario> usuarios = new ArrayList<Usuario>();
-				usuarios = handler.GetList();
+				try {
+					usuarios = handler.GetList();
+					
+					List<Usuario> usuarioExistente = usuarios.stream()
+						     .filter(item -> item.GetEmail().equals(textEmail.getText()) && item.GetSenha().equals(txtSenha.getText())).toList();
+					
+					if(usuarioExistente.size() > 0)
+						Global.idUsuario = usuarioExistente.get(0).GetId(); 
+					else
+						lblInfo.setText("Email ou Senha incorretos.");
+					
+					dispose();
+					
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 				
-				List<Usuario> usuarioExistente = usuarios.stream()
-					     .filter(item -> item.GetEmail().equals(email) && item.GetSenha().equals(senha)).toList();
-				
-				if(usuarioExistente.size() > 0)
-					idUsuario = usuarioExistente.get(0).GetId(); 
-				else
-					System.out.println("Email ou Senha incorretos. Por favor, tente novamente.");
 				
 			}
 		});
@@ -104,6 +133,8 @@ public class LoginView extends JFrame {
 		txtSenha = new JPasswordField();
 		txtSenha.setBounds(32, 121, 154, 20);
 		contentPane.add(txtSenha);
+		
+		
 	}
 
 }

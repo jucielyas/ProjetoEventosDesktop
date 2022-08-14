@@ -1,0 +1,1 @@
+[{"idCategoria":0,"idEndereco":0,"nome":"teste","data":"Aug 20, 2023, 8:30:00 PM","descricao":"teste","id":1}]
